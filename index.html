@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remon Alberts — Architect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Custom properties ─────────────────────────────── */
+    :root {
+      --white:       #FFFFFF;
+      --near-black:  #1A1A1A;
+      --mid-gray:    #6B6B6B;
+      --light-gray:  #E4E4E4;
+      --accent:      #8B9DAD;
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'Plus Jakarta Sans', sans-serif;
+      --nav-h:        72px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--near-black);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ───────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 48px;
+      height: var(--nav-h);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    nav.scrolled {
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid var(--light-gray);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--near-black);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--near-black);
+      text-decoration: none;
+      transition: color 0.3s, opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 0.45; }
+
+    /* ─── HERO ──────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      height: 100svh;
+      min-height: 560px;
+      overflow: hidden;
+    }
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+    .hero-overlay {
+      /* No darkening — image shown as-is */
+      display: none;
+    }
+    .hero-content {
+      position: absolute;
+      bottom: 72px;
+      left: 48px;
+      /* Light grey so text reads against a bright image without any overlay */
+    }
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 6vw, 84px);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      margin-bottom: 14px;
+      color: #3A3A3A;
+    }
+    .hero-cred {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #6B6B6B;
+    }
+
+    /* ─── SHARED SECTION STYLES ─────────────────────────── */
+    .section-wrap {
+      padding: 112px 48px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--mid-gray);
+      margin-bottom: 60px;
+    }
+
+    /* ─── WORK GRID ─────────────────────────────────────── */
+    #work { padding-top: 96px; padding-bottom: 0; }
+
+    /* Two equal columns; align-items:start means rows don't
+       force images to stretch — each image renders at its own
+       natural aspect ratio, fully uncropped. */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3px;
+    }
+
+    .project-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: #111;
+      aspect-ratio: 3 / 2;
+    }
+    .project-card.square { aspect-ratio: 1 / 1; }
+    .project-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  opacity  0.4s ease;
+    }
+    .project-card:hover img {
+      transform: scale(1.04);
+      opacity: 0.86;
+    }
+    .project-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.58) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 32px 36px;
+    }
+    .project-card:hover .project-card-overlay { opacity: 1; }
+
+    .card-info {
+      transform: translateY(10px);
+      transition: transform 0.38s ease;
+      color: var(--white);
+    }
+    .project-card:hover .card-info { transform: translateY(0); }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 5px;
+    }
+    .card-type {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    /* ─── PROJECT MODAL ─────────────────────────────────── */
+    .project-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: var(--white);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .project-modal.open { display: block; }
+
+    .modal-close {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 22px 48px;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid var(--light-gray);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--near-black);
+      transition: opacity 0.2s;
+    }
+    .modal-close:hover { opacity: 0.5; }
+    .modal-close svg { flex-shrink: 0; }
+
+    .modal-header {
+      padding: 72px 48px 56px;
+    }
+    .modal-project-title {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 5vw, 60px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .modal-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mid-gray);
+    }
+
+    .modal-gallery {
+      padding: 0 0 120px;
+    }
+
+    /* Gallery renders images in their natural proportions —
+       no cropping at all. Full-width images alternate with
+       side-by-side pairs; everything is height: auto. */
+    .modal-gallery-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    /* A single image spanning the full width */
+    .g-full {
+      width: 100%;
+    }
+    .g-full img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Two images side by side — each gets 50% width, natural height.
+       The row height is set by the taller of the two; neither is cropped. */
+    .g-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      align-items: start;
+    }
+    .g-pair img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ─── ABOUT ─────────────────────────────────────────── */
+    #about {
+      border-top: 1px solid var(--light-gray);
+    }
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 80px;
+      align-items: start;
+    }
+    .about-text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.6vw, 46px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.18;
+      margin-bottom: 32px;
+    }
+    .about-text p {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: #3C3C3C;
+      margin-bottom: 18px;
+    }
+    .about-text p:last-of-type { margin-bottom: 0; }
+    .about-text em { font-style: italic; font-weight: 300; }
+
+    .about-creds {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .about-creds span {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--mid-gray);
+    }
+
+    .about-portrait {
+      display: block;
+    }
+    .about-portrait img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ─── CV ─────────────────────────────────────────────── */
+    #cv {
+      border-top: 1px solid var(--light-gray);
+    }
+    .cv-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 48px;
+      padding-bottom: 64px;
+      margin-bottom: 0;
+    }
+    .cv-row + .cv-row {
+      border-top: 1px solid var(--light-gray);
+      padding-top: 64px;
+    }
+
+    .cv-cat {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--mid-gray);
+      padding-top: 4px;
+    }
+    .cv-entries { display: flex; flex-direction: column; gap: 32px; }
+
+    .cv-entry {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 24px;
+    }
+    .cv-year {
+      font-size: 13px;
+      color: var(--mid-gray);
+      letter-spacing: 0.02em;
+      padding-top: 2px;
+    }
+    .cv-entry-body strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .cv-entry-body span {
+      display: block;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--mid-gray);
+      line-height: 1.7;
+    }
+
+    .cv-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--near-black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--near-black);
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+    .cv-download:hover { opacity: 0.5; }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--light-gray);
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer p {
+      font-size: 12px;
+      color: var(--mid-gray);
+      letter-spacing: 0.03em;
+    }
+    footer a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--near-black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--near-black);
+      padding-bottom: 1px;
+      transition: opacity 0.2s;
+    }
+    footer a:hover { opacity: 0.5; }
+
+    /* ─── SCROLL ANIMATIONS ──────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .about-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .about-portrait { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { gap: 20px; }
+
+      .section-wrap { padding: 80px 24px; }
+      #work { padding-top: 72px; }
+
+      .hero-content { left: 24px; bottom: 56px; }
+
+      .project-grid { grid-template-columns: 1fr; }
+
+      .modal-close { padding: 18px 24px; }
+      .modal-header { padding: 48px 24px 40px; }
+      .modal-gallery { padding: 0 0 80px; }
+      /* On mobile, pairs collapse to single column */
+      .g-pair { grid-template-columns: 1fr; }
+
+      .cv-row { grid-template-columns: 1fr; gap: 24px; }
+      .cv-entry { grid-template-columns: 80px 1fr; gap: 16px; }
+
+      footer { flex-direction: column; gap: 16px; padding: 32px 24px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ NAV ═══════════════ -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">RA</a>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#cv">CV</a></li>
+      <li><a href="mailto:remon.alberts@gmail.com">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <div class="hero">
+    <img class="hero-img"
+         src="Thomas Phifer - Corning/Corning Museum TPP 1420.jpg"
+         alt="Museum of Modern Art, Warsaw — Thomas Phifer and Partners" />
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-name">Remon Alberts</h1>
+      <p class="hero-cred">AIA &nbsp;·&nbsp; LEED AP &nbsp;·&nbsp; CPHD &nbsp;·&nbsp; New York City</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ WORK ═══════════════ -->
+  <section class="section-wrap" id="work">
+    <p class="section-label">Selected Work</p>
+    <div class="project-grid">
+
+      <!-- Card — Springsteen Center Structure -->
+      <div class="project-card square reveal" onclick="openModal('modal-springsteen-structure')">
+        <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2522_© COOKFOX Architects.jpg" alt="Bruce Springsteen Center for American Music — Structure" />
+        <div class="project-card-overlay">
+          <div class="card-info">
+            <p class="card-title">Springsteen Center for American Music — Structure</p>
+            <p class="card-type">COOKFOX Architects &nbsp;·&nbsp; Cultural &nbsp;·&nbsp; West Long Branch, NJ</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card — Springsteen Center Facade -->
+      <div class="project-card square reveal reveal-delay-1" onclick="openModal('modal-springsteen')">
+        <img src="COOKFOX - Springsteen - Facade/AJ2A1918.jpg" alt="Bruce Springsteen Center for American Music" />
+        <div class="project-card-overlay">
+          <div class="card-info">
+            <p class="card-title">Springsteen Center for American Music — Facade</p>
+            <p class="card-type">COOKFOX Architects &nbsp;·&nbsp; Cultural &nbsp;·&nbsp; West Long Branch, NJ</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card — Ruby -->
+      <div class="project-card reveal" onclick="openModal('modal-ruby')">
+        <img src="COOKFOX - Ruby/01_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="Ruby" />
+        <div class="project-card-overlay">
+          <div class="card-info">
+            <p class="card-title">Ruby</p>
+            <p class="card-type">COOKFOX Architects &nbsp;·&nbsp; Residential &nbsp;·&nbsp; New York, NY</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 04 — TR -->
+      <div class="project-card reveal reveal-delay-1" onclick="openModal('modal-tr')">
+        <img src="Thomas Phifer - TR/Final_B_revB_2k.jpg" alt="Thomas Phifer — TR" />
+        <div class="project-card-overlay">
+          <div class="card-info">
+            <p class="card-title">TR Warszawa Theatre</p>
+            <p class="card-type">Thomas Phifer and Partners &nbsp;·&nbsp; Cultural &nbsp;·&nbsp; Warsaw, Poland</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 05 — Museum of Modern Art Warsaw -->
+      <div class="project-card reveal" onclick="openModal('modal-msn')">
+        <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-34.jpg" alt="Museum of Modern Art, Warsaw" />
+        <div class="project-card-overlay">
+          <div class="card-info">
+            <p class="card-title">Museum of Modern Art</p>
+            <p class="card-type">Thomas Phifer and Partners &nbsp;·&nbsp; Cultural &nbsp;·&nbsp; Warsaw, Poland</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 03 — Glenstone -->
+      <div class="project-card reveal reveal-delay-1" onclick="openModal('modal-glenstone')">
+        <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1797.jpg" alt="Glenstone Museum" />
+        <div class="project-card-overlay">
+          <div class="card-info">
+            <p class="card-title">Glenstone Museum</p>
+            <p class="card-type">Thomas Phifer and Partners &nbsp;·&nbsp; Cultural &nbsp;·&nbsp; Potomac, MD</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 02 — Corning Museum -->
+      <div class="project-card reveal" onclick="openModal('modal-corning')">
+        <img src="Thomas Phifer - Corning/Corning Museum TPP 1342.jpg" alt="Corning Museum of Glass" />
+        <div class="project-card-overlay">
+          <div class="card-info">
+            <p class="card-title">Corning Museum of Glass</p>
+            <p class="card-type">Thomas Phifer and Partners &nbsp;·&nbsp; Cultural &nbsp;·&nbsp; Corning, NY</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 01 — Rock Creek House -->
+      <div class="project-card reveal reveal-delay-1" onclick="openModal('modal-rch')">
+        <img src="NADAAA - Rock Creek House/01.jpg" alt="Rock Creek House" />
+        <div class="project-card-overlay">
+          <div class="card-info">
+            <p class="card-title">Rock Creek House</p>
+            <p class="card-type">NADAAA &nbsp;·&nbsp; Residential &nbsp;·&nbsp; Washington, D.C.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════ MODAL — Rock Creek House ═══════════════ -->
+  <div class="project-modal" id="modal-rch">
+    <button class="modal-close" onclick="closeModal('modal-rch')">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Work
+    </button>
+
+    <div class="modal-header">
+      <h2 class="modal-project-title">Rock Creek House</h2>
+      <div class="modal-meta">
+        <span>NADAAA</span>
+        <span>Residential</span>
+        <span>Washington, D.C.</span>
+      </div>
+    </div>
+
+    <div class="modal-gallery">
+      <div class="modal-gallery-inner">
+        <div class="g-full"><img src="NADAAA - Rock Creek House/01.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="NADAAA - Rock Creek House/02.jpg" alt="" />
+          <img src="NADAAA - Rock Creek House/03.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="NADAAA - Rock Creek House/04.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="NADAAA - Rock Creek House/05.jpg" alt="" />
+          <img src="NADAAA - Rock Creek House/06.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="NADAAA - Rock Creek House/07.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="NADAAA - Rock Creek House/08.jpg" alt="" />
+          <img src="NADAAA - Rock Creek House/10.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODAL — Corning Museum ═══════════════ -->
+  <div class="project-modal" id="modal-corning">
+    <button class="modal-close" onclick="closeModal('modal-corning')">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Work
+    </button>
+
+    <div class="modal-header">
+      <h2 class="modal-project-title">Corning Museum of Glass</h2>
+      <div class="modal-meta">
+        <span>Thomas Phifer and Partners</span>
+        <span>Cultural Institution</span>
+        <span>Corning, New York</span>
+      </div>
+    </div>
+
+    <div class="modal-gallery">
+      <div class="modal-gallery-inner">
+        <div class="g-full"><img src="Thomas Phifer - Corning/Corning Museum TPP 1420.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 0183.jpg" alt="" />
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 0251.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Corning/Corning Museum TPP 0322.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 0539.jpg" alt="" />
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 0658.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Corning/Corning Museum TPP 0728.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 1071.jpg" alt="" />
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 1236.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Corning/Corning Museum TPP 1307.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 1342.jpg" alt="" />
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 1367.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Corning/Corning Museum TPP 1420.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 1451.jpg" alt="" />
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 6556.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Corning/Corning Museum TPP 6628.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 6708.jpg" alt="" />
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 6739.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Corning/Corning Museum TPP 7159.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 7647 new.jpg" alt="" />
+          <img src="Thomas Phifer - Corning/Corning Museum TPP 7685.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Corning/Corning Museum TPP 7904.jpg" alt="" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODAL — Glenstone ═══════════════ -->
+  <div class="project-modal" id="modal-glenstone">
+    <button class="modal-close" onclick="closeModal('modal-glenstone')">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Work
+    </button>
+
+    <div class="modal-header">
+      <h2 class="modal-project-title">Glenstone Museum</h2>
+      <div class="modal-meta">
+        <span>Thomas Phifer and Partners</span>
+        <span>Cultural Institution</span>
+        <span>Potomac, Maryland</span>
+      </div>
+    </div>
+
+    <div class="modal-gallery">
+      <div class="modal-gallery-inner">
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1797.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1838.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1849.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1871.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1934.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1957.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1960.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1993.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1999.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 2089.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 2093.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 2171.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 2268.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 2357.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 2411.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 2486.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 2490.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3177.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3259.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3362.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3481.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3604.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3661.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3694.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3749.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 3967.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 4878.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 5588.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 6042.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 6082.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 6084.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 1695.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 1727.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 1783.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 1810.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 1815.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 1955.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 1973.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 2113.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 2458.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 2560.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 2695.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 2715.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 2781.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3035.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3621.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3624.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3660.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3726.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3731.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3764.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3799.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3858.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 3918.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 4001.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 4007.jpg" alt="" />
+          <img src="Thomas Phifer - Glenstone/Glenstone 18-08 TPA 4258.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODAL — TR ═══════════════ -->
+  <div class="project-modal" id="modal-tr">
+    <button class="modal-close" onclick="closeModal('modal-tr')">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Work
+    </button>
+
+    <div class="modal-header">
+      <h2 class="modal-project-title">TR Warszawa Theatre</h2>
+      <div class="modal-meta">
+        <span>Thomas Phifer and Partners</span>
+        <span>Cultural Institution</span>
+        <span>Warsaw, Poland</span>
+      </div>
+    </div>
+
+    <div class="modal-gallery">
+      <div class="modal-gallery-inner">
+        <div class="g-full"><img src="Thomas Phifer - TR/Final_B_revB_2k.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - TR/Final_B_Dusk_revA_2k.jpg" alt="" />
+          <img src="Thomas Phifer - TR/Final_AH_revB_2k.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - TR/Final_C_revB_2k.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - TR/Final_D_portrait_people.jpg" alt="" />
+          <img src="Thomas Phifer - TR/Final_G_revD.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - TR/Final_H_5k.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - TR/Final_I_people.jpg" alt="" />
+          <img src="Thomas Phifer - TR/Final_K_revD_2k.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - TR/Final_M_people.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - TR/Final_N_revB.jpg" alt="" />
+          <img src="Thomas Phifer - TR/Final_P_revC.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - TR/EXT03_02 - Copy.jpg" alt="" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODAL — Museum of Modern Art Warsaw ═══════════════ -->
+  <div class="project-modal" id="modal-msn">
+    <button class="modal-close" onclick="closeModal('modal-msn')">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Work
+    </button>
+
+    <div class="modal-header">
+      <h2 class="modal-project-title">Museum of Modern Art</h2>
+      <div class="modal-meta">
+        <span>Thomas Phifer and Partners</span>
+        <span>Cultural Institution</span>
+        <span>Warsaw, Poland</span>
+      </div>
+    </div>
+
+    <div class="modal-gallery">
+      <div class="modal-gallery-inner">
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-34.jpg" alt="" /></div>
+
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-12-667x1000.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-13-667x1000.jpg" alt="" />
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-14-667x1000.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-34.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-16.jpg" alt="" />
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-17.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-18.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-19-667x1000.jpg" alt="" />
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-20.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-21-667x1000.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-22-667x1000.jpg" alt="" />
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-24.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-25.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-26-667x1000.jpg" alt="" />
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-27.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-28.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-30.jpg" alt="" />
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-31.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-32.jpg" alt="" /></div>
+        <div class="g-pair">
+                    <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-35.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-36.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-37.jpg" alt="" />
+          <img src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-38-750x1000.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODAL — Ruby ═══════════════ -->
+  <div class="project-modal" id="modal-ruby">
+    <button class="modal-close" onclick="closeModal('modal-ruby')">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Work
+    </button>
+
+    <div class="modal-header">
+      <h2 class="modal-project-title">Ruby</h2>
+      <div class="modal-meta">
+        <span>COOKFOX Architects</span>
+        <span>Residential</span>
+        <span>New York, NY</span>
+      </div>
+    </div>
+
+    <div class="modal-gallery">
+      <div class="modal-gallery-inner">
+        <div class="g-full"><img src="COOKFOX - Ruby/01_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/02_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/03_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/04_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/05_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/06_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/07_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/08_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/09_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/10_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/11_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/12_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/13_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/14_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/15_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/16_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/17_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/18_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/19_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/20_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/21_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/22_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/23_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/24_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/25_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/26_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/27_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/28_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/29_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/30_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/31_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/32_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/33_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/34_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/35_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/36_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/37_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/38_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/39_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/40_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/41_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/42_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/43_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Ruby/44_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+          <img src="COOKFOX - Ruby/45_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Ruby/46_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODAL — Springsteen Center ═══════════════ -->
+  <div class="project-modal" id="modal-springsteen">
+    <button class="modal-close" onclick="closeModal('modal-springsteen')">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Work
+    </button>
+
+    <div class="modal-header">
+      <h2 class="modal-project-title">Springsteen Center for American Music — Facade</h2>
+      <div class="modal-meta">
+        <span>COOKFOX Architects</span>
+        <span>Cultural</span>
+        <span>West Long Branch, NJ</span>
+      </div>
+    </div>
+
+    <div class="modal-gallery">
+      <div class="modal-gallery-inner">
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A1518.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1545.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1563.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A1634.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1640.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1653.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A1714.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1716.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1736.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A1768.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1782.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1817-Pano.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A1911.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1918.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1921.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A1926.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1939.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A1958.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2000.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A2029.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A2041.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2045.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2113.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2139.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2211.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2226.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2229.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2245.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2246.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2252.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2253.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2263.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A2271.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A2272.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2285.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2289.jpg" alt="" /></div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A2301.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A4359.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A4363.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A4408.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A4656.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A4708.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A4711.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A4722.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A4723-Pano.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A4746.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A4863.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A4876.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A4947.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5085.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5305.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A5312.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5660-Pano.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5674.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A5682.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5692.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5759.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A5778.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5806.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5838.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A5853.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A5862.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/AJ2A8345.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/AJ2A8353.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/AJ2A8365.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/DSC_2038.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Facade/DSC_2053.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Facade/DSC_2054.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Facade/DSC_2450.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODAL — Springsteen Structure ═══════════════ -->
+  <div class="project-modal" id="modal-springsteen-structure">
+    <button class="modal-close" onclick="closeModal('modal-springsteen-structure')">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Work
+    </button>
+
+    <div class="modal-header">
+      <h2 class="modal-project-title">Springsteen Center for American Music — Structure</h2>
+      <div class="modal-meta">
+        <span>COOKFOX Architects</span>
+        <span>Cultural</span>
+        <span>West Long Branch, NJ</span>
+      </div>
+    </div>
+
+    <div class="modal-gallery">
+      <div class="modal-gallery-inner">
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/AJ2A5350.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/AJ2A5363.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/AJ2A5385.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/AJ2A5387-Pano.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/AJ2A5546.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2237_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2279_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2399_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2413_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2458_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2460_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2472_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2496_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2499_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2517_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2522_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2548_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2568_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2571_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2581_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2582_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2586_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2592_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2602_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2605_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2624_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2633_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2635_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2641_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2655_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2657_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2694_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2710_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2719_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2770_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2829_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2832_© COOKFOX Architects.jpg" alt="" /></div>
+        <div class="g-pair">
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2856_© COOKFOX Architects.jpg" alt="" />
+          <img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2864_© COOKFOX Architects.jpg" alt="" />
+        </div>
+        <div class="g-full"><img src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2874-Pano_© COOKFOX Architects.jpg" alt="" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ABOUT ═══════════════ -->
+  <section class="section-wrap" id="about">
+    <p class="section-label">About</p>
+    <div class="about-inner">
+      <div class="about-text reveal">
+        <h2>Expert in sustainable architecture, across typologies and scales.</h2>
+        <p>Remon Alberts, AIA, CPHD, LEED AP BD+C is a Senior Associate at COOKFOX Architects, where he has played a key role in advancing the firm's mission-driven design approach since 2021. He brings deep experience across multifamily residential and institutional work, currently leading design management for 65 Franklin, a residential tower on Broadway in Lower Manhattan.</p>
+        <p>Prior to COOKFOX, Remon worked at Thomas Phifer and Partners, contributing to cultural projects including a new wing for the Corning Museum of Glass and the Museum of Modern Art in Warsaw. Earlier, he was part of the team at NADAAA in Boston, working on Rock Creek House, a single-family residence in Washington, D.C.</p>
+        <p>Remon holds a degree in architecture from Delft University of Technology, where he graduated with honors. He brings a rigorous interest in comparative urbanism and energy policy to both design and advocacy — serving as a certified Passive House designer, AIA COTE member, contributor to Architecture 2030's reporting efforts, and visiting critic at universities in Boston and New York City.</p>
+        <div class="about-creds">
+          <span>AIA — American Institute of Architects</span>
+          <span>CPHD — Certified Passive House Designer</span>
+          <span>LEED AP BD+C — Leadership in Energy and Environmental Design</span>
+        </div>
+      </div>
+      <div class="about-portrait reveal reveal-delay-1">
+        <img src="profile picture.jpg" alt="Remon Alberts" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CV ═══════════════ -->
+  <section class="section-wrap" id="cv">
+    <p class="section-label">Curriculum Vitae</p>
+
+    <div class="cv-row reveal">
+      <p class="cv-cat">Experience</p>
+      <div class="cv-entries">
+        <div class="cv-entry">
+          <span class="cv-year">2021 — Present</span>
+          <div class="cv-entry-body">
+            <strong>COOKFOX Architects</strong>
+            <span>Senior Architect &nbsp;·&nbsp; 2021–23</span>
+            <span>Associate &nbsp;·&nbsp; 2023–25</span>
+            <span>Senior Associate &nbsp;·&nbsp; 2025–present</span>
+            <span>New York, NY</span>
+          </div>
+        </div>
+        <div class="cv-entry">
+          <span class="cv-year">2011 — 2021</span>
+          <div class="cv-entry-body">
+            <strong>Thomas Phifer and Partners</strong>
+            <span>Intermediate Architect &nbsp;·&nbsp; 2011–18</span>
+            <span>Associate &nbsp;·&nbsp; 2018–21</span>
+            <span>New York, NY</span>
+          </div>
+        </div>
+        <div class="cv-entry">
+          <span class="cv-year">2006 — 2011</span>
+          <div class="cv-entry-body">
+            <strong>NADAAA</strong>
+            <span>Junior Architect</span>
+            <span>Boston, MA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-row reveal">
+      <p class="cv-cat">Education</p>
+      <div class="cv-entries">
+        <div class="cv-entry">
+          <span class="cv-year"></span>
+          <div class="cv-entry-body">
+            <strong>Berlage Institute</strong>
+            <span>Master Class Steel (invited)</span>
+          </div>
+        </div>
+        <div class="cv-entry">
+          <span class="cv-year"></span>
+          <div class="cv-entry-body">
+            <strong>Delft University of Technology</strong>
+            <span>Master of Architecture, with Honors</span>
+          </div>
+        </div>
+        <div class="cv-entry">
+          <span class="cv-year"></span>
+          <div class="cv-entry-body">
+            <strong>Hanze University, Groningen</strong>
+            <span>Bachelor of Science in General Architecture</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-row reveal">
+      <p class="cv-cat">Credentials</p>
+      <div class="cv-entries">
+        <div class="cv-entry">
+          <span class="cv-year"></span>
+          <div class="cv-entry-body">
+            <strong>AIA</strong>
+            <span>American Institute of Architects</span>
+          </div>
+        </div>
+        <div class="cv-entry">
+          <span class="cv-year"></span>
+          <div class="cv-entry-body">
+            <strong>LEED AP</strong>
+            <span>Leadership in Energy and Environmental Design</span>
+          </div>
+        </div>
+        <div class="cv-entry">
+          <span class="cv-year"></span>
+          <div class="cv-entry-body">
+            <strong>CPHD</strong>
+            <span>Certified Passive House Designer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-row reveal">
+      <p class="cv-cat">Download</p>
+      <div class="cv-entries">
+        <div class="cv-entry">
+          <span class="cv-year"></span>
+          <div class="cv-entry-body">
+            <a class="cv-download" href="Remon Alberts CV - 2026.pdf" target="_blank" download="Remon Alberts CV - 2026.pdf">
+              Full CV — PDF
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V10M7 10L3.5 6.5M7 10L10.5 6.5M1 13H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer>
+    <p>© 2026 Remon Alberts. New York City.</p>
+    <a href="mailto:remon.alberts@gmail.com">remon.alberts@gmail.com</a>
+  </footer>
+
+  <!-- ═══════════════ JS ═══════════════ -->
+  <script>
+    // Nav scroll class — add background when scrolled past hero
+    const nav = document.getElementById('nav');
+    const onScroll = () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Start with scrolled style since hero is light
+    nav.classList.add('scrolled');
+
+    // Modals
+    function openModal(id) {
+      const m = document.getElementById(id);
+      m.classList.add('open');
+      m.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.project-modal.open')
+          .forEach(m => { m.classList.remove('open'); });
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Scroll reveal
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+
+</body>
+</html>
