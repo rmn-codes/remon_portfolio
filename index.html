@@ -6,6 +6,8 @@
   <title>Remon Alberts — Architect</title>
   <meta name="description" content="Portfolio website for Remon Alberts, AIA, LEED AP, CPHD. Selected architectural work, bio, and CV." />
   <meta name="theme-color" content="#FFFFFF" />
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
@@ -418,6 +420,12 @@
       transition: opacity 0.2s;
     }
     .cv-download:hover { opacity: 0.5; }
+    .cv-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--mid-gray);
+      letter-spacing: 0.03em;
+    }
 
     /* ─── FOOTER ─────────────────────────────────────────── */
     footer {
@@ -506,7 +514,7 @@
   <!-- ═══════════════ HERO ═══════════════ -->
   <div class="hero">
     <img loading="eager" fetchpriority="high" decoding="async" class="hero-img"
-         src="Thomas Phifer - Corning/Corning Museum TPP 1420.jpg"
+         src="assets/optimized/hero-corning-1420.jpg"
          alt="Museum of Modern Art, Warsaw — Thomas Phifer and Partners" />
     <div class="hero-overlay"></div>
     <div class="hero-content">
@@ -522,7 +530,7 @@
 
       <!-- Card — Springsteen Center Structure -->
       <div class="project-card square reveal" onclick="openModal('modal-springsteen-structure')">
-        <img loading="lazy" decoding="async" src="COOKFOX - Springsteen - Structure/SpringsteenArchives_AJ2A2522_© COOKFOX Architects.jpg" alt="Bruce Springsteen Center for American Music — Structure" />
+        <img loading="lazy" decoding="async" src="assets/optimized/springsteen-structure-cover.jpg" alt="Bruce Springsteen Center for American Music — Structure" />
         <div class="project-card-overlay">
           <div class="card-info">
             <p class="card-title">Springsteen Center for American Music — Structure</p>
@@ -533,7 +541,7 @@
 
       <!-- Card — Springsteen Center Facade -->
       <div class="project-card square reveal reveal-delay-1" onclick="openModal('modal-springsteen')">
-        <img loading="lazy" decoding="async" src="COOKFOX - Springsteen - Facade/AJ2A1918.jpg" alt="Bruce Springsteen Center for American Music" />
+        <img loading="lazy" decoding="async" src="assets/optimized/springsteen-facade-cover.jpg" alt="Bruce Springsteen Center for American Music" />
         <div class="project-card-overlay">
           <div class="card-info">
             <p class="card-title">Springsteen Center for American Music — Facade</p>
@@ -544,7 +552,7 @@
 
       <!-- Card — Ruby -->
       <div class="project-card reveal" onclick="openModal('modal-ruby')">
-        <img loading="lazy" decoding="async" src="COOKFOX - Ruby/01_Ruby_l © COOKFOX Architects_Alex Ferrec.jpg" alt="Ruby" />
+        <img loading="lazy" decoding="async" src="assets/optimized/ruby-cover.jpg" alt="Ruby" />
         <div class="project-card-overlay">
           <div class="card-info">
             <p class="card-title">Ruby</p>
@@ -555,7 +563,7 @@
 
       <!-- Card 04 — TR -->
       <div class="project-card reveal reveal-delay-1" onclick="openModal('modal-tr')">
-        <img loading="lazy" decoding="async" src="Thomas Phifer - TR/Final_B_revB_2k.jpg" alt="Thomas Phifer — TR" />
+        <img loading="lazy" decoding="async" src="assets/optimized/tr-cover.jpg" alt="Thomas Phifer — TR" />
         <div class="project-card-overlay">
           <div class="card-info">
             <p class="card-title">TR Warszawa Theatre</p>
@@ -566,7 +574,7 @@
 
       <!-- Card 05 — Museum of Modern Art Warsaw -->
       <div class="project-card reveal" onclick="openModal('modal-msn')">
-        <img loading="lazy" decoding="async" src="Thomas Phifer - Museum of Modern Art/thomas-phifer-partners-museum-modern-art-msn-warsaw-exhibition-opening-designboom-34.jpg" alt="Museum of Modern Art, Warsaw" />
+        <img loading="lazy" decoding="async" src="assets/optimized/msn-cover.jpg" alt="Museum of Modern Art, Warsaw" />
         <div class="project-card-overlay">
           <div class="card-info">
             <p class="card-title">Museum of Modern Art</p>
@@ -577,7 +585,7 @@
 
       <!-- Card 03 — Glenstone -->
       <div class="project-card reveal reveal-delay-1" onclick="openModal('modal-glenstone')">
-        <img loading="lazy" decoding="async" src="Thomas Phifer - Glenstone/Glenstone 18-06 TPA 1797.jpg" alt="Glenstone Museum" />
+        <img loading="lazy" decoding="async" src="assets/optimized/glenstone-cover.jpg" alt="Glenstone Museum" />
         <div class="project-card-overlay">
           <div class="card-info">
             <p class="card-title">Glenstone Museum</p>
@@ -588,7 +596,7 @@
 
       <!-- Card 02 — Corning Museum -->
       <div class="project-card reveal" onclick="openModal('modal-corning')">
-        <img loading="lazy" decoding="async" src="Thomas Phifer - Corning/Corning Museum TPP 1342.jpg" alt="Corning Museum of Glass" />
+        <img loading="lazy" decoding="async" src="assets/optimized/corning-cover.jpg" alt="Corning Museum of Glass" />
         <div class="project-card-overlay">
           <div class="card-info">
             <p class="card-title">Corning Museum of Glass</p>
@@ -599,7 +607,7 @@
 
       <!-- Card 01 — Rock Creek House -->
       <div class="project-card reveal reveal-delay-1" onclick="openModal('modal-rch')">
-        <img loading="lazy" decoding="async" src="NADAAA - Rock Creek House/01.jpg" alt="Rock Creek House" />
+        <img loading="lazy" decoding="async" src="assets/optimized/rock-creek-cover.jpg" alt="Rock Creek House" />
         <div class="project-card-overlay">
           <div class="card-info">
             <p class="card-title">Rock Creek House</p>
@@ -1276,7 +1284,7 @@
         </div>
       </div>
       <div class="about-portrait reveal reveal-delay-1">
-        <img loading="lazy" decoding="async" src="profile picture.jpg" alt="Remon Alberts" />
+        <img loading="lazy" decoding="async" src="assets/optimized/about-portrait.jpg" alt="Remon Alberts" />
       </div>
     </div>
   </section>
@@ -1378,12 +1386,13 @@
         <div class="cv-entry">
           <span class="cv-year"></span>
           <div class="cv-entry-body">
-            <a class="cv-download" href="Remon Alberts CV - 2026.pdf" target="_blank" rel="noopener noreferrer" download="Remon Alberts CV - 2026.pdf">
-              Full CV — PDF
+            <a class="cv-download" href="Remon Alberts CV - 2026 Protected.zip" download="Remon Alberts CV - 2026 Protected.zip" data-password="1609" onclick="return unlockCvDownload(event)">
+              Full CV — Protected ZIP
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M7 1V10M7 10L3.5 6.5M7 10L10.5 6.5M1 13H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </a>
+            <p class="cv-note">Password required to open the download.</p>
           </div>
         </div>
       </div>
@@ -1418,6 +1427,18 @@
     function closeModal(id) {
       document.getElementById(id).classList.remove('open');
       document.body.style.overflow = '';
+    }
+    function unlockCvDownload(event) {
+      const link = event.currentTarget;
+      const password = window.prompt('Enter the CV download password');
+      if (password !== link.dataset.password) {
+        event.preventDefault();
+        if (password !== null) {
+          window.alert('Incorrect password.');
+        }
+        return false;
+      }
+      return true;
     }
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
